@@ -1,3 +1,5 @@
+import snapshot from "@/data/cafes-bengaluru.json";
+
 export type Cafe = {
   id: string;
   name: string;
@@ -12,10 +14,19 @@ export type Cafe = {
   outdoorSeating: boolean;
 };
 
+
 const UA = "cafe-finder-hobby/0.1 (personal learning project)";
 
+type SnapshotCafe = Omit<Cafe, "distanceKm">;
+const SNAP = snapshot as unknown as SnapshotCafe[];
+const BOX = { south: 12.83, west: 77.45, north: 13.14, east: 77.8 };
+
+function inBengaluru(lat: number, lng: number) {
+  return lat >= BOX.south && lat <= BOX.north && lng >= BOX.west && lng <= BOX.east;
+}
+
 export async function geocodeCity(q: string) {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=in&q=${encodeURIComponent(q)}`;
   const res = await fetch(url, {
     headers: { "User-Agent": UA },
     next: { revalidate: 60 * 60 * 24 * 7 },
@@ -42,10 +53,23 @@ function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
 }
 
 export async function findCafes(
+  
   lat: number,
   lng: number,
   radiusM = 4000
+  
 ): Promise<Cafe[]> {
+
+    if (SNAP.length > 0 && inBengaluru(lat, lng)) {
+    return SNAP.map((c) => ({
+      ...c,
+      distanceKm: distanceKm(lat, lng, c.lat, c.lng),
+    }))
+      .filter((c) => c.distanceKm <= radiusM / 1000)
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+      .slice(0, 60);
+  }
+
   const query = `[out:json][timeout:25];(node["amenity"="cafe"](around:${radiusM},${lat},${lng});way["amenity"="cafe"](around:${radiusM},${lat},${lng}););out center tags;`;
   const res = await fetch(
     `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`,
@@ -57,6 +81,11 @@ export async function findCafes(
     // Overpass sometimes replies "200 OK" with no data when it is overloaded
   if (!json.elements?.length && json.remark) {
     throw new Error(`Overpass: ${json.remark}`);
+  }
+
+    // a big city returning zero cafes means the server failed, not that there are none
+  if (!json.elements?.length && inBengaluru(lat, lng)) {
+    throw new Error("Overpass returned no data");
   }
 
   const cafes: Cafe[] = [];
@@ -94,6 +123,8 @@ export async function findCafes(
 }
 
 export async function getCafeById(id: string): Promise<Cafe | null> {
+  const hit = SNAP.find((c) => c.id === id);
+  if (hit) return { ...hit, distanceKm: 0 };
   const m = /^(node|way)-(\d+)$/.exec(id);
   if (!m) return null;
   const [, type, num] = m;

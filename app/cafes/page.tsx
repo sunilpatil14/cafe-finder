@@ -79,6 +79,9 @@ export default async function CafesPage({
           </div>
         </div>
       )}
+      <p className="mt-16 text-xs text-muted-foreground">
+        Cafe data © OpenStreetMap contributors
+      </p>
     </main>
   );
 }
