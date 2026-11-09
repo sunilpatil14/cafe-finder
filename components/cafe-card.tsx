@@ -8,9 +8,9 @@ export function CafeCard({ cafe }: { cafe: Cafe }) {
   const photo = getFeatured(cafe.id)?.images?.[0];
 
   return (
-    <Link href={`/cafes/${cafe.id}`} className="block">
+    <Link href={`/cafes/${cafe.id}`} className="block h-full">
       <article className="group flex h-full flex-col rounded-2xl border border-border bg-card p-5 transition hover:-translate-y-1 hover:shadow-lg">
-        <div className="relative mb-4 h-32 overflow-hidden rounded-xl bg-secondary">
+        <div className="relative mb-4 h-32 shrink-0 overflow-hidden rounded-xl bg-secondary">
           <Image
             src={photo ?? "/cafe-placeholder.svg"}
             alt={photo ? `${cafe.name} interior` : "Coffee cup illustration"}
@@ -21,11 +21,15 @@ export function CafeCard({ cafe }: { cafe: Cafe }) {
           />
         </div>
 
-        <h3 className="font-display text-xl leading-snug">{cafe.name}</h3>
+        <h3 className="font-display line-clamp-2 text-xl leading-snug">
+          {cafe.name}
+        </h3>
 
         <p className="mt-1 flex items-start gap-1.5 text-sm text-muted-foreground">
           <MapPin className="mt-0.5 size-4 shrink-0" />
-          <span>{cafe.address || "Tap for location & directions"}</span>
+          <span className="line-clamp-2">
+            {cafe.address || "Tap for location & directions"}
+          </span>
         </p>
 
         {cafe.openingHours && (
@@ -35,7 +39,7 @@ export function CafeCard({ cafe }: { cafe: Cafe }) {
           </p>
         )}
 
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-auto flex items-center justify-between pt-4">
           <div className="flex gap-2 text-accent">
             {cafe.wifi && <Wifi className="size-4" aria-label="WiFi" />}
             {cafe.outdoorSeating && (

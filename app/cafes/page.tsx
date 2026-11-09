@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { CafeCard } from "@/components/cafe-card";
 import { CafeMap } from "@/components/cafe-map";
-import { findCafes, geocodeCity, type Cafe } from "@/lib/cafes";
 import { Reveal } from "@/components/reveal";
-export const instant = false;
+import { StatusState, type StatusKind } from "@/components/status-state";
+import { findCafes, geocodeCity, type Cafe } from "@/lib/cafes";
 
 export default async function CafesPage({
   searchParams,
@@ -13,30 +14,34 @@ export default async function CafesPage({
 }) {
   const { city, lat, lng } = await searchParams;
 
+  if (!city && !(lat && lng)) redirect("/");
+
   let title = "Cafes near you";
+  let place = "your location";
   let cafes: Cafe[] = [];
-  let message = "";
+  let status: StatusKind | null = null;
 
   try {
     let coords: { lat: number; lng: number } | null = null;
 
     if (lat && lng) {
-      coords = { lat: parseFloat(lat), lng: parseFloat(lng) };
+      const la = parseFloat(lat);
+      const ln = parseFloat(lng);
+      if (Number.isNaN(la) || Number.isNaN(ln)) status = "notfound";
+      else coords = { lat: la, lng: ln };
     } else if (city) {
       title = `Cafes in ${city}`;
+      place = city;
       coords = await geocodeCity(city);
-      if (!coords) message = `We couldn't find "${city}". Try a different spelling.`;
-    } else {
-      message = "Search for a city to get started.";
+      if (!coords) status = "notfound";
     }
 
     if (coords) {
       cafes = await findCafes(coords.lat, coords.lng);
-      if (cafes.length === 0) message = "No cafes found in this area yet.";
+      if (cafes.length === 0) status = "empty";
     }
   } catch {
-    message =
-      "The map data service is busy right now. Please try again in a moment.";
+    status = "busy";
   }
 
   return (
@@ -55,9 +60,9 @@ export default async function CafesPage({
         </p>
       )}
 
-      {message && <p className="mt-10 text-muted-foreground">{message}</p>}
+      {status && <StatusState kind={status} place={place} />}
 
-            {cafes.length > 0 && (
+      {cafes.length > 0 && (
         <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_440px]">
           <div className="grid gap-6 sm:grid-cols-2">
             {cafes.map((cafe, i) => (

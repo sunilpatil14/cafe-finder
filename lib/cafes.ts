@@ -20,7 +20,7 @@ export async function geocodeCity(q: string) {
     headers: { "User-Agent": UA },
     next: { revalidate: 60 * 60 * 24 * 7 },
   });
-  if (!res.ok) return null;
+    if (!res.ok) throw new Error(`Nominatim error ${res.status}`);
   const data = await res.json();
   if (!data.length) return null;
   return {
@@ -53,6 +53,11 @@ export async function findCafes(
   );
   if (!res.ok) throw new Error(`Overpass error ${res.status}`);
   const json = await res.json();
+
+    // Overpass sometimes replies "200 OK" with no data when it is overloaded
+  if (!json.elements?.length && json.remark) {
+    throw new Error(`Overpass: ${json.remark}`);
+  }
 
   const cafes: Cafe[] = [];
   for (const el of json.elements ?? []) {
