@@ -87,3 +87,46 @@ export async function findCafes(
 
   return cafes.sort((a, b) => a.distanceKm - b.distanceKm).slice(0, 60);
 }
+
+export async function getCafeById(id: string): Promise<Cafe | null> {
+  const m = /^(node|way)-(\d+)$/.exec(id);
+  if (!m) return null;
+  const [, type, num] = m;
+
+  const query = `[out:json][timeout:25];${type}(${num});out center tags;`;
+  const res = await fetch(
+    `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`,
+    { headers: { "User-Agent": UA }, next: { revalidate: 60 * 60 * 24 } }
+  );
+  if (!res.ok) throw new Error(`Overpass error ${res.status}`);
+  const json = await res.json();
+
+  const el = json.elements?.[0];
+  if (!el) return null;
+  const t = el.tags ?? {};
+  const lat = el.lat ?? el.center?.lat;
+  const lng = el.lon ?? el.center?.lon;
+  if (!t.name || lat == null || lng == null) return null;
+
+  const address = [
+    [t["addr:housenumber"], t["addr:street"]].filter(Boolean).join(" "),
+    t["addr:suburb"],
+    t["addr:city"],
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  return {
+    id,
+    name: t.name,
+    lat,
+    lng,
+    distanceKm: 0,
+    address,
+    openingHours: t.opening_hours,
+    phone: t.phone ?? t["contact:phone"],
+    website: t.website ?? t["contact:website"],
+    wifi: t.internet_access === "wlan" || t.internet_access === "yes",
+    outdoorSeating: t.outdoor_seating === "yes",
+  };
+}

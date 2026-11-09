@@ -1,0 +1,20 @@
+{
+  "node-0000000": {
+    "tagline": "Replace this with a one-line description of the cafe",
+    "images": [],
+    "coffeeTypes": ["Espresso", "Cappuccino", "Cold Brew", "Filter Coffee"],
+    "menu": [
+      {
+        "category": "Coffee",
+        "items": [
+          { "name": "Cappuccino", "price": 180, "description": "Double shot, steamed milk" },
+          { "name": "Filter Coffee", "price": 90 }
+        ]
+      },
+      {
+        "category": "Bites",
+        "items": [{ "name": "Butter Croissant", "price": 150 }]
+      }
+    ]
+  }
+}
