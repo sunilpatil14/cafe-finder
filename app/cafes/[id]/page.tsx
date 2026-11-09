@@ -2,8 +2,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Clock, Globe, MapPin, Navigation, Phone, Sun, Wifi } from "lucide-react";
 import { BackLink } from "@/components/back-link";
-import { getCafeById, type Cafe } from "@/lib/cafes";
+import { getCafeById, reverseGeocode, type Cafe } from "@/lib/cafes";
 import { getFeatured } from "@/lib/featured";
+export const instant = false;
 
 export default async function CafeDetailPage({
   params,
@@ -28,6 +29,7 @@ export default async function CafeDetailPage({
   if (!cafe) notFound();
 
   const extra = getFeatured(id);
+  const address = cafe.address || (await reverseGeocode(cafe.lat, cafe.lng));
   const images = extra?.images ?? [];
   const directions = `https://www.google.com/maps/dir/?api=1&destination=${cafe.lat},${cafe.lng}`;
   const website = cafe.website?.startsWith("http") ? cafe.website : undefined;
@@ -73,7 +75,7 @@ export default async function CafeDetailPage({
       <section className="mt-10 grid gap-4 rounded-2xl border border-border bg-card p-6 sm:grid-cols-2">
         <p className="flex items-start gap-2 text-sm">
           <MapPin className="mt-0.5 size-4 shrink-0 text-accent" />
-          {cafe.address || "Address not listed"}
+          {address || "Address not listed"}
         </p>
         {cafe.openingHours && (
           <p className="flex items-start gap-2 text-sm">

@@ -3,6 +3,8 @@ import { ArrowLeft } from "lucide-react";
 import { CafeCard } from "@/components/cafe-card";
 import { CafeMap } from "@/components/cafe-map";
 import { findCafes, geocodeCity, type Cafe } from "@/lib/cafes";
+import { Reveal } from "@/components/reveal";
+export const instant = false;
 
 export default async function CafesPage({
   searchParams,
@@ -58,8 +60,10 @@ export default async function CafesPage({
             {cafes.length > 0 && (
         <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_440px]">
           <div className="grid gap-6 sm:grid-cols-2">
-            {cafes.map((cafe) => (
-              <CafeCard key={cafe.id} cafe={cafe} />
+            {cafes.map((cafe, i) => (
+              <Reveal key={cafe.id} index={i}>
+                <CafeCard cafe={cafe} />
+              </Reveal>
             ))}
           </div>
 

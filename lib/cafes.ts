@@ -130,3 +130,25 @@ export async function getCafeById(id: string): Promise<Cafe | null> {
     outdoorSeating: t.outdoor_seating === "yes",
   };
 }
+
+export async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&addressdetails=1&lat=${lat}&lon=${lng}`,
+      { headers: { "User-Agent": UA }, next: { revalidate: 60 * 60 * 24 * 30 } }
+    );
+    if (!res.ok) return "";
+    const d = await res.json();
+    const a = d.address ?? {};
+    const parts = [
+      a.house_number,
+      a.road,
+      a.neighbourhood ?? a.suburb,
+      a.city ?? a.town ?? a.village,
+      a.postcode,
+    ].filter(Boolean);
+    return parts.length ? parts.join(", ") : d.display_name ?? "";
+  } catch {
+    return "";
+  }
+}
