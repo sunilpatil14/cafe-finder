@@ -54,6 +54,9 @@ const dLat = (N - S) / ROWS;
 const dLng = (E - W) / COLS;
 let failed = 0;
 
+const START = Number(process.argv[2] ?? 1);
+const END = Number(process.argv[3] ?? 99);
+
 for (let r = 0; r < ROWS; r++) {
   for (let c = 0; c < COLS; c++) {
     const s = (S + r * dLat).toFixed(4);
@@ -61,6 +64,8 @@ for (let r = 0; r < ROWS; r++) {
     const w = (W + c * dLng).toFixed(4);
     const e = (W + (c + 1) * dLng).toFixed(4);
     const n_ = r * COLS + c + 1;
+        if (n_ < START) continue; 
+            if (n_ > END) continue;
     console.log(`Tile ${n_}/${ROWS * COLS}`);
 
     const elements = await fetchTile(`${s},${w},${n},${e}`);
