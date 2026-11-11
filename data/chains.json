@@ -1,0 +1,21 @@
+[
+  {
+    "match": [
+      "thirdwavecoffee",
+      "thirdwavecoffeeroasters",
+      "thirdwave",
+      "thirdwavecoffeeshop"
+    ],
+    "data": {
+      "tagline": "REPLACE with one line about the chain",
+      "coffeeTypes": ["REPLACE", "with", "their", "real", "coffee types"],
+      "menu": [
+        {
+          "category": "Coffee",
+          "items": [{ "name": "REPLACE", "price": 0 }]
+        }
+      ],
+      "updatedAt": "11 Nov 2026"
+    }
+  }
+]

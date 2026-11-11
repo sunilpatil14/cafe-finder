@@ -10,9 +10,9 @@ import { findCafes, geocodeCity, type Cafe } from "@/lib/cafes";
 export default async function CafesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ city?: string; lat?: string; lng?: string }>;
+   searchParams: Promise<{ city?: string; lat?: string; lng?: string; name?: string }>;
 }) {
-  const { city, lat, lng } = await searchParams;
+   const { city, lat, lng, name } = await searchParams;
 
   if (!city && !(lat && lng)) redirect("/");
 
@@ -24,7 +24,11 @@ export default async function CafesPage({
   try {
     let coords: { lat: number; lng: number } | null = null;
 
-    if (lat && lng) {
+      if (lat && lng) {
+            if (name) {
+        title = `Cafes in ${name}`;
+        place = name;
+      }
       const la = parseFloat(lat);
       const ln = parseFloat(lng);
       if (Number.isNaN(la) || Number.isNaN(ln)) status = "notfound";

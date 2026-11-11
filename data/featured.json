@@ -1,20 +1,15 @@
 {
-  "node-0000000": {
-    "tagline": "Replace this with a one-line description of the cafe",
-    "images": [],
-    "coffeeTypes": ["Espresso", "Cappuccino", "Cold Brew", "Filter Coffee"],
-    "menu": [
-      {
-        "category": "Coffee",
-        "items": [
-          { "name": "Cappuccino", "price": 180, "description": "Double shot, steamed milk" },
-          { "name": "Filter Coffee", "price": 90 }
-        ]
-      },
-      {
-        "category": "Bites",
-        "items": [{ "name": "Butter Croissant", "price": 150 }]
-      }
-    ]
-  }
+  "node-123456": {
+  "tagline": "Brick walls, big windows, slow Sunday mornings",
+  "images": ["/cafes/example-cafe/1.jpg", "/cafes/example-cafe/2.jpg"],
+  "photoCredit": "Photos by Sunil",
+  "coffeeTypes": ["Espresso", "Cappuccino", "Cold Brew"],
+  "menu": [
+    { "category": "Coffee", "items": [{ "name": "Cappuccino", "price": 180 }] }
+  ],
+  "offers": [
+    { "title": "Buy 1 get 1 on cold brew", "details": "Weekdays 3 to 6 pm", "validTill": "31 Dec 2026" }
+  ],
+  "updatedAt": "11 Nov 2026"
 }
+} 

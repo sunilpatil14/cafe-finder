@@ -120,6 +120,34 @@ export default async function CafeDetailPage({
         </a>
       </section>
 
+            {extra?.photoCredit && images.length > 0 && (
+        <p className="mt-2 text-xs text-muted-foreground">{extra.photoCredit}</p>
+      )}
+
+      {extra?.offers && extra.offers.length > 0 && (
+        <section className="mt-10">
+          <h2 className="font-display text-3xl">Offers</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {extra.offers.map((o) => (
+              <div
+                key={o.title}
+                className="rounded-2xl border border-accent/40 bg-accent/10 p-5"
+              >
+                <p className="font-medium">{o.title}</p>
+                {o.details && (
+                  <p className="mt-1 text-sm text-muted-foreground">{o.details}</p>
+                )}
+                {o.validTill && (
+                  <p className="mt-2 text-xs uppercase tracking-widest text-accent">
+                    Valid till {o.validTill}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Coffee types */}
       {extra?.coffeeTypes && extra.coffeeTypes.length > 0 && (
         <section className="mt-12">
@@ -167,6 +195,11 @@ export default async function CafeDetailPage({
               </div>
             ))}
           </div>
+        {extra?.updatedAt && (
+        <p className="mt-6 text-xs text-muted-foreground">
+          Menu and offers last updated {extra.updatedAt}
+        </p>
+      )}
         </section>
       )}
 
