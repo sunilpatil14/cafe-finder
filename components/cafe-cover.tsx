@@ -1,12 +1,12 @@
 import { Coffee } from "lucide-react";
 
 const PALETTES = [
-  ["#ead9bf", "#d4b48c"],
-  ["#e3d0c0", "#c99a7a"],
-  ["#dfe0c8", "#b5b98f"],
-  ["#e8d5c9", "#c9a08f"],
-  ["#d9d2c3", "#a89a82"],
-  ["#ecd9b8", "#c8954f"],
+  ["#f3e9d8", "#cfe4f2"],
+  ["#efe2cf", "#e0c3a3"],
+  ["#dcebf5", "#b7d6ea"],
+  ["#e8d9c4", "#c8a784"],
+  ["#f5ecde", "#bfddf0"],
+  ["#e2d0ba", "#a9cde6"],
 ];
 
 function hash(s: string) {
