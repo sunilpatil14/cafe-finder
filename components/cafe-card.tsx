@@ -3,22 +3,32 @@ import Link from "next/link";
 import { Clock, MapPin, Sun, Wifi } from "lucide-react";
 import type { Cafe } from "@/lib/cafes";
 import { getFeatured } from "@/lib/featured";
+import { CafeCover } from "@/components/cafe-cover";
 
 export function CafeCard({ cafe }: { cafe: Cafe }) {
-  const photo = getFeatured(cafe.id)?.images?.[0];
+    const extra = getFeatured(cafe.id, cafe.name);
+  const photo = extra?.images?.[0]; 
 
   return (
     <Link href={`/cafes/${cafe.id}`} className="block h-full">
       <article className="group flex h-full flex-col rounded-2xl border border-border bg-card p-5 transition hover:-translate-y-1 hover:shadow-lg">
-        <div className="relative mb-4 h-32 shrink-0 overflow-hidden rounded-xl bg-secondary">
-          <Image
-            src={photo ?? "/cafe-placeholder.svg"}
-            alt={photo ? `${cafe.name} interior` : "Coffee cup illustration"}
-            fill
-            sizes="(min-width: 1024px) 20vw, 50vw"
-            className="object-cover"
-            unoptimized={!photo}
-          />
+                <div className="relative mb-4 h-32 shrink-0 overflow-hidden rounded-xl bg-secondary">
+          {photo ? (
+            <Image
+              src={photo}
+              alt={`${cafe.name} interior`}
+              fill
+              sizes="(min-width: 1024px) 20vw, 50vw"
+              className="object-cover"
+            />
+          ) : (
+            <CafeCover name={cafe.name} className="h-full w-full" />
+          )}
+          {extra?.menu && extra.menu.length > 0 && (
+            <span className="absolute right-2 top-2 rounded-full bg-card/90 px-2.5 py-1 text-xs font-medium text-accent">
+              Menu
+            </span>
+          )}
         </div>
 
         <h3 className="font-display line-clamp-2 text-xl leading-snug">

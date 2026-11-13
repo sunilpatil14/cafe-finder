@@ -5,6 +5,7 @@ import { BackLink } from "@/components/back-link";
 import { getCafeById, reverseGeocode, type Cafe } from "@/lib/cafes";
 import { getFeatured } from "@/lib/featured";
 export const instant = false;
+import { CafeCover } from "@/components/cafe-cover";
 
 export default async function CafeDetailPage({
   params,
@@ -65,8 +66,11 @@ export default async function CafeDetailPage({
             ))}
           </div>
         ) : (
-          <div className="flex aspect-[16/7] items-center justify-center rounded-2xl bg-secondary text-muted-foreground">
-            Interior photos coming soon
+                  <div className="relative aspect-[16/7] overflow-hidden rounded-2xl">
+            <CafeCover name={cafe.name} large className="h-full w-full" />
+            <span className="absolute bottom-3 right-4 text-sm text-foreground/60">
+              Interior photos coming soon
+            </span>
           </div>
         )}
       </section>
@@ -110,14 +114,24 @@ export default async function CafeDetailPage({
             <Sun className="size-4 text-accent" /> Outdoor seating
           </p>
         )}
-        <a
-          href={directions}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm text-primary-foreground sm:col-span-2"
-        >
-          <Navigation className="size-4" /> Get directions
-        </a>
+               <div className="flex flex-wrap gap-3 sm:col-span-2">
+          <a
+            href={directions}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm text-primary-foreground"
+          >
+            <Navigation className="size-4" /> Get directions
+          </a>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${cafe.name} Bengaluru`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2 text-sm hover:bg-secondary"
+          >
+            See photos & reviews
+          </a>
+        </div>
       </section>
 
             {extra?.photoCredit && images.length > 0 && (
