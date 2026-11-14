@@ -2,7 +2,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Clock, Globe, MapPin, Navigation, Phone, Sun, Wifi } from "lucide-react";
 import { BackLink } from "@/components/back-link";
-import { getCafeById, reverseGeocode, type Cafe } from "@/lib/cafes";
+import { getCafeById, inSnapshot, reverseGeocode, type Cafe } from "@/lib/cafes";
+import { Contribute } from "@/components/contribute";
 import { getFeatured } from "@/lib/featured";
 export const instant = false;
 import { CafeCover } from "@/components/cafe-cover";
@@ -131,7 +132,7 @@ export default async function CafeDetailPage({
           >
             See photos & reviews
           </a>
-        </div>
+        </div>  
       </section>
 
             {extra?.photoCredit && images.length > 0 && (
@@ -226,6 +227,7 @@ export default async function CafeDetailPage({
           </p>
         </section>
       )}
+        {inSnapshot(id) && <Contribute cafeId={id} cafeName={cafe.name} />}
     </main>
   );
 }

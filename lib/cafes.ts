@@ -188,3 +188,5 @@ export async function reverseGeocode(lat: number, lng: number): Promise<string> 
     return "";
   }
 }
+
+export const inSnapshot = (id: string) => SNAP.some((c) => c.id === id);
